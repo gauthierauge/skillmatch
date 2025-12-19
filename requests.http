@@ -1,0 +1,276 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@freelanceId = 1
+@entrepriseId = 1
+@projetId = 1
+
+### ============================================
+### FREELANCES
+### ============================================
+
+### Créer un freelance
+POST {{baseUrl}}/freelances
+Content-Type: application/json
+
+{
+  "nom": "Alice Dupont",
+  "email": "alice.dupont@example.com",
+  "skills": ["JavaScript", "TypeScript", "React", "Node.js"],
+  "tjm": 500
+}
+
+### Récupérer tous les freelances
+GET {{baseUrl}}/freelances
+
+### Récupérer tous les freelances avec filtre skill
+GET {{baseUrl}}/freelances?skill=React
+
+### Récupérer un freelance par ID
+GET {{baseUrl}}/freelances/{{freelanceId}}
+
+### Récupérer les projets compatibles pour un freelance
+GET {{baseUrl}}/freelances/{{freelanceId}}/projets-compatibles
+
+### Postuler à un projet
+POST {{baseUrl}}/freelances/{{freelanceId}}/postuler
+Content-Type: application/json
+
+{
+  "projetId": {{projetId}}
+}
+
+### ============================================
+### ENTREPRISES
+### ============================================
+
+### Créer une entreprise
+POST {{baseUrl}}/entreprises
+Content-Type: application/json
+
+{
+  "nom": "TechCorp",
+  "secteur": "Technologie"
+}
+
+### Récupérer toutes les entreprises
+GET {{baseUrl}}/entreprises
+
+### Récupérer une entreprise par ID
+GET {{baseUrl}}/entreprises/{{entrepriseId}}
+
+### Créer un projet pour une entreprise
+POST {{baseUrl}}/entreprises/{{entrepriseId}}/projets
+Content-Type: application/json
+
+{
+  "titre": "Développement d'une application web",
+  "description": "Création d'une plateforme e-commerce complète avec React et Node.js",
+  "skillsRequis": ["JavaScript", "React", "Node.js"],
+  "budgetMaxTjm": 600
+}
+
+### Récupérer les projets d'une entreprise
+GET {{baseUrl}}/entreprises/{{entrepriseId}}/projets
+
+### Récupérer les candidats compatibles pour un projet
+GET {{baseUrl}}/entreprises/{{entrepriseId}}/projets/{{projetId}}/candidats-compatibles
+
+### ============================================
+### PROJETS
+### ============================================
+
+### Récupérer tous les projets ouverts (BONUS)
+GET {{baseUrl}}/projets/ouverts
+
+### ============================================
+### SCÉNARIO COMPLET DE TEST
+### ============================================
+
+### 1. Créer une entreprise
+# @name createEntreprise
+POST {{baseUrl}}/entreprises
+Content-Type: application/json
+
+{
+  "nom": "InnovateTech",
+  "secteur": "Innovation"
+}
+
+###
+
+### 2. Créer des freelances
+# @name createFreelance1
+POST {{baseUrl}}/freelances
+Content-Type: application/json
+
+{
+  "nom": "Sophie Martin",
+  "email": "sophie.martin@example.com",
+  "skills": ["JavaScript", "TypeScript", "React", "Node.js", "PostgreSQL"],
+  "tjm": 450
+}
+
+###
+
+# @name createFreelance2
+POST {{baseUrl}}/freelances
+Content-Type: application/json
+
+{
+  "nom": "Thomas Dubois",
+  "email": "thomas.dubois@example.com",
+  "skills": ["Python", "Django", "React", "Docker"],
+  "tjm": 550
+}
+
+###
+
+# @name createFreelance3
+POST {{baseUrl}}/freelances
+Content-Type: application/json
+
+{
+  "nom": "Julie Bernard",
+  "email": "julie.bernard@example.com",
+  "skills": ["JavaScript", "Vue.js", "Node.js"],
+  "tjm": 400
+}
+
+###
+
+### 3. Créer des projets pour l'entreprise
+# @name createProjet1
+POST {{baseUrl}}/entreprises/1/projets
+Content-Type: application/json
+
+{
+  "titre": "Refonte site e-commerce",
+  "description": "Migration complète du site vers une architecture moderne",
+  "skillsRequis": ["JavaScript", "React", "Node.js"],
+  "budgetMaxTjm": 500
+}
+
+###
+
+# @name createProjet2
+POST {{baseUrl}}/entreprises/1/projets
+Content-Type: application/json
+
+{
+  "titre": "API Backend",
+  "description": "Développement d'une API RESTful avec authentification JWT",
+  "skillsRequis": ["Python", "Django", "PostgreSQL"],
+  "budgetMaxTjm": 600
+}
+
+###
+
+### 4. Vérifier les projets ouverts
+GET {{baseUrl}}/projets/ouverts
+
+###
+
+### 5. Vérifier les projets compatibles pour un freelance
+GET {{baseUrl}}/freelances/1/projets-compatibles
+
+###
+
+### 6. Vérifier les candidats compatibles pour un projet
+GET {{baseUrl}}/entreprises/1/projets/1/candidats-compatibles
+
+###
+
+### 7. Postuler à un projet
+POST {{baseUrl}}/freelances/1/postuler
+Content-Type: application/json
+
+{
+  "projetId": 1
+}
+
+###
+
+### 8. Vérifier que le projet n'est plus disponible
+GET {{baseUrl}}/projets/ouverts
+
+###
+
+### 9. Essayer de postuler au même projet (devrait échouer)
+POST {{baseUrl}}/freelances/2/postuler
+Content-Type: application/json
+
+{
+  "projetId": 1
+}
+
+###
+
+### ============================================
+### TESTS D'ERREUR
+### ============================================
+
+### Freelance inexistant
+GET {{baseUrl}}/freelances/9999
+
+###
+
+### Entreprise inexistante
+GET {{baseUrl}}/entreprises/9999
+
+###
+
+### Projet inexistant pour une entreprise
+GET {{baseUrl}}/entreprises/1/projets/9999/candidats-compatibles
+
+###
+
+### Postuler avec TJM trop élevé
+# D'abord créer un freelance avec TJM élevé
+POST {{baseUrl}}/freelances
+Content-Type: application/json
+
+{
+  "nom": "Expert Senior",
+  "email": "expert@example.com",
+  "skills": ["JavaScript", "React", "Node.js"],
+  "tjm": 1000
+}
+
+###
+
+# Puis essayer de postuler au projet avec budget max 500
+POST {{baseUrl}}/freelances/4/postuler
+Content-Type: application/json
+
+{
+  "projetId": 1
+}
+
+###
+
+### Postuler sans les compétences requises
+POST {{baseUrl}}/freelances/3/postuler
+Content-Type: application/json
+
+{
+  "projetId": 2
+}
+
+###
+
+### ============================================
+### FILTRAGE ET RECHERCHE
+### ============================================
+
+### Filtrer les freelances par skill
+GET {{baseUrl}}/freelances?skill=React
+
+###
+
+GET {{baseUrl}}/freelances?skill=Python
+
+###
+
+GET {{baseUrl}}/freelances?skill=Java
+
+###
