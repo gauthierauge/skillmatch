@@ -22,8 +22,7 @@ SkillMatch est une API REST qui permet de:
 ### 1. Cloner le projet
 
 ```bash
-git clone <repository-url>
-cd SkillMatch
+git clone git@github.com:gauthierauge/skillmatch.git
 ```
 
 ### 2. Installer les dépendances
@@ -37,24 +36,20 @@ npm install
 Le projet utilise Docker pour PostgreSQL:
 
 ```bash
-# Démarrer PostgreSQL en arrière-plan
 docker-compose up -d
-
-# Vérifier que le conteneur tourne
-docker ps
 ```
 
 La base de données sera accessible sur `localhost:5432` avec:
 - User: `user`
 - Password: `password`
-- Database: `ubereats`
+- Database: `skillmatch`
 
 ### 4. Configuration de l'environnement
 
 Créer un fichier `.env` à la racine du projet:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/ubereats?schema=public"
+DATABASE_URL="postgresql://user:password@localhost:5432/skillmatch?schema=public"
 PORT=3000
 ```
 
@@ -93,15 +88,6 @@ npm start
 ```bash
 # Lancer les tests en mode watch
 npm test
-
-# Lancer les tests une fois
-npm run test:run
-
-# Lancer les tests avec la couverture
-npm run test:coverage
-
-# Lancer les tests avec l'interface UI
-npm run test:ui
 ```
 
 ## Commandes Docker utiles
@@ -112,18 +98,6 @@ docker-compose up -d
 
 # Arrêter PostgreSQL
 docker-compose down
-
-# Voir les logs de PostgreSQL
-docker-compose logs -f postgres
-
-# Arrêter et supprimer les données (ATTENTION: supprime toutes les données!)
-docker-compose down -v
-
-# Redémarrer PostgreSQL
-docker-compose restart
-
-# Se connecter à PostgreSQL via le CLI
-docker exec -it postgres psql -U user -d ubereats
 ```
 
 ## Utilisation avec Makefile
@@ -135,9 +109,7 @@ make install         # Installer les dépendances
 make dev            # Démarrer en mode développement
 make build          # Build pour la production
 make test           # Lancer les tests
-make test-coverage  # Tests avec couverture
 make prisma-migrate # Appliquer les migrations
-make prisma-studio  # Ouvrir Prisma Studio
 make clean          # Nettoyer le projet
 ```
 
